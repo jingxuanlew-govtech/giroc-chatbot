@@ -1,0 +1,157 @@
+{
+  "fields": [
+    {
+      "title": "Reporting Date / Time",
+      "fields": [
+        {
+          "name": "incident_occurrence_date",
+          "label": "Incident Occurrence Date",
+          "type": "datetime",
+          "required": false
+        },
+        {
+          "name": "incident_detection_date",
+          "label": "Incident Detection Date",
+          "type": "datetime",
+          "required": true
+        }
+      ]
+    },
+    {
+      "title": "Reporting / Affected Agencies",
+      "fields": [
+        {
+          "name": "reporting_agency",
+          "label": "Select Reporting Agency",
+          "type": "dropdown",
+          "required": true,
+          "options": [
+            "DOS",
+            "GOVTECH"
+          ]
+        },
+        {
+          "name": "ministry_family",
+          "label": "Ministry Family of Affected Agency / Agencies",
+          "type": "dropdown",
+          "required": false,
+          "depends_on": "reporting_agency",
+          "mapping": {
+            "DOS": ["MTI"],
+            "GOVTECH": ["MDDI"]
+          }
+        },
+        {
+          "name": "affected_agencies_type",
+          "label": "Affected Agencies",
+          "type": "dropdown",
+          "required": false,
+          "options": [
+            "Single Agency",
+            "Multiple Agencies"
+          ]
+        },
+        {
+          "name": "which_agency",
+          "label": "Which Agency",
+          "type": "dropdown",
+          "options": [
+            "DOS",
+            "GOVTECH"
+          ],
+          "selection_rule": {
+            "depends_on": "affected_agencies_type",
+            "rules": {
+              "Single Agency": {
+                "max_select": 1
+              },
+              "Multiple Agencies": {
+                "max_select": 2
+              }
+            }
+          }
+        },
+        {
+          "name": "incident_stakeholders", 
+          "label": "Incident Stakeholder(s)",
+          "type": "text",
+          "required": false
+        }
+      ]
+    },
+    {
+      "title": "Incident Details",
+      "fields": [
+        {
+          "name": "is_the_incident_type_cybersecurity",
+          "label": "Is the incident type cybersecurity?",
+          "type": "dropdown",
+          "required": false,
+          "options": [
+            "Yes",
+            "No"
+          ]
+        },
+        {
+          "name": "is_the_incident_type_data_security",
+          "label": "Is the incident type data security?",
+          "type": "dropdown",
+          "required": false,
+          "options": [
+            "Yes",
+            "No"
+          ]
+        },
+        {
+          "name": "is_the_incident_type_loss_of_ICT_equipment",
+          "label": "Is the incident type loss of ICT equipment?",
+          "type": "dropdown",
+          "required": false,
+          "options": [
+            "Yes",
+            "No"
+          ]
+        },
+        {
+          "name": "is_the_incident_type_service_availability",
+          "label": "Is the incident type service availability?",
+          "type": "dropdown",
+          "required": false,
+          "options": [
+            "Yes",
+            "No"
+          ]
+        },
+        {
+          "name": "select_incident_severity_classification",
+          "label": "Select Incident Severity Classification (Reporter)",
+          "type": "dropdown",
+          "required": false,
+          "options": [
+            "High",
+            "Medium",
+            "Low"
+          ]
+        },
+        {
+          "name": "incident_title",
+          "label": "Incident Title (max 200 characters)",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "incident_description",
+          "label": "Provide description of incident (max 4000 characters)",
+          "type": "text",
+          "required": true
+        }, 
+        {
+          "name": "supporting_materials",
+          "label": "Provide supporting materials such as screenshots, error logsm system logs, etc.",
+          "type": "file_upload",
+          "required": false
+        }
+      ]
+    }
+  ]
+}
