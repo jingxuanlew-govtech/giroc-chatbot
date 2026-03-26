@@ -19,7 +19,7 @@ export function sanitiseUpdatedFields(updatedFields, allowedFieldNames) {
 
 export function normaliseExtractionOutput(parsed, allowedFieldNames) {
   return {
-    updated_fields: sanitizeUpdatedFields(
+    updated_fields: sanitiseUpdatedFields(
       parsed?.updated_fields || {},
       allowedFieldNames
     ),

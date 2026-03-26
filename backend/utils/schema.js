@@ -1,16 +1,35 @@
 export function flattenFields(schemaObj) {
   if (!schemaObj) return [];
 
-  if (Array.isArray(schemaObj.fields)) {
-    return schemaObj.fields;
-  }
-
+  // Case 1: standard schema with top-level sections
   if (Array.isArray(schemaObj.sections)) {
     return schemaObj.sections.flatMap((section) => section.fields || []);
   }
 
+  // Case 2: top-level fields exists, but may actually contain sections
+  if (Array.isArray(schemaObj.fields)) {
+    const firstItem = schemaObj.fields[0];
+
+    // If fields array actually contains sections, flatten again
+    if (firstItem && Array.isArray(firstItem.fields)) {
+      return schemaObj.fields.flatMap((section) => section.fields || []);
+    }
+
+    // Otherwise it's already a flat array of real fields
+    return schemaObj.fields;
+  }
+
+  // Case 3: schema itself is an array
   if (Array.isArray(schemaObj)) {
-    return schemaObj.flatMap((section) => section.fields || []);
+    const firstItem = schemaObj[0];
+
+    // If array contains sections
+    if (firstItem && Array.isArray(firstItem.fields)) {
+      return schemaObj.flatMap((section) => section.fields || []);
+    }
+
+    // Otherwise assume already flat fields
+    return schemaObj;
   }
 
   return [];
@@ -19,7 +38,7 @@ export function flattenFields(schemaObj) {
 export function getAllowedFieldNames(fields) {
   return new Set(
     fields
-      .map((f) => f.name || f.id || f.key)
+      .map((field) => field.name)
       .filter(Boolean)
   );
 }

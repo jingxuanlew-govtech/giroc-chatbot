@@ -23,48 +23,63 @@ export default function App() {
     textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 180)}px`
   }, [input])
 
-  const sendMessage = async () => {
-    const messageToSend = input.trim()
-    if (!messageToSend || loading) return
+const sendMessage = async () => {
+  if (!input.trim() || loading) return;
 
-    setMessages((prev) => [...prev, { role: 'user', content: messageToSend }])
-    setInput('')
-    setLoading(true)
+  const userMessage = input;
+  setInput("");
 
-    try {
-      const response = await fetch('http://localhost:3000/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: messageToSend }),
-      })
+  setMessages((prev) => [
+    ...prev,
+    { role: "user", content: userMessage },
+  ]);
 
-      const data = await response.json()
+  setLoading(true);
 
-      if (!response.ok) {
-        throw new Error(data.error || 'Request failed')
-      }
+  try {
+    const res = await fetch("http://localhost:3000/chat", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        message: userMessage,
+        form_state: formState,
+      }),
+    });
 
-      setFormState(data.form_state || {})
-      setMessages((prev) => [
+    const data = await res.json();
+    console.log("CHAT RESPONSE:", data);
+
+    if (data.form_state) {
+      setFormState(data.form_state);
+    } else {
+      setFormState((prev) => ({
         ...prev,
-        {
-          role: 'assistant',
-          content: data.next_question || 'Got it.',
-        },
-      ])
-    } catch (error) {
-      setMessages((prev) => [
-        ...prev,
-        {
-          role: 'assistant',
-          content:
-            'Error connecting to backend. Check that your backend is running on port 3000.',
-        },
-      ])
-    } finally {
-      setLoading(false)
+        ...(data.updated_fields || {}),
+      }));
     }
+
+    setMessages((prev) => [
+      ...prev,
+      {
+        role: "assistant",
+        content: data.next_question || "Noted.",
+      },
+    ]);
+  } catch (err) {
+    console.error(err);
+    setMessages((prev) => [
+      ...prev,
+      {
+        role: "assistant",
+        content: "Error connecting to backend.",
+      },
+    ]);
+  } finally {
+    setLoading(false);
   }
+};
 
   const handleKeyDown = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {

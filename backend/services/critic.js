@@ -22,6 +22,11 @@ Rules:
 - Return ONLY valid JSON.
 - No markdown.
 - No explanation.
+- Only extract information explicitly stated by the user.
+- Do not guess or invent values.
+- Do not create an incident title unless the user explicitly provides one.
+- If the user gives a relative date/time like "yesterday" or "this morning", keep it as stated rather than guessing an exact timestamp.
+- Return null for unknown fields.
 
 Allowed fields:
 ${getFieldListText(formFields)}
